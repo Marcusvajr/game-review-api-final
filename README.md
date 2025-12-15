@@ -53,20 +53,6 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - API base: `http://localhost:3333/api`
 - Swagger: `http://localhost:3333/docs`
 
-## Banco local x producao
-- Desenvolvimento: `prisma/schema.prisma` (SQLite) + `npm run prisma:migrate` + `npm run prisma:generate`
-- Producao (Render / Postgres): `prisma/postgres/schema.prisma` + `npm run prisma:migrate:prod` + `npm run prisma:generate:prod` (usa `DATABASE_URL` do Postgres)
-
-## Deploy no Render (resumo)
-- Build Command: `npm install && npm run build && npm run prisma:generate:prod && npm run prisma:migrate:prod`
-- Start Command: `npm start`
-- Variaveis de ambiente: `DATABASE_URL` (Postgres Render), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `ACCESS_TOKEN_EXPIRES_IN`, `REFRESH_TOKEN_EXPIRES_IN`, `NODE_ENV=production`, `PORT` (Render define automaticamente)
-- Swagger em producao: `https://<seu-servico>.onrender.com/docs`
-
-## 🌍 API em Producao
-- API: `https://game-review-api.onrender.com` (substitua pelo seu host no Render)
-- Swagger: `https://game-review-api.onrender.com/docs`
-
 ## Autenticacao e perfis
 - Autenticacao via Bearer token (`Authorization: Bearer <access_token>`).
 - Fluxo: `POST /api/auth/login` retorna `accessToken` e `refreshToken`; `POST /api/auth/refresh` gera novo access token.
@@ -111,3 +97,76 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 
 ## Documentacao
 - Abra `http://localhost:3333/docs` com o servidor rodando para testar as rotas via Swagger UI.
+
+## 🚀 Deploy em Produção (Render)
+
+Esta API está hospedada em **produção** utilizando a plataforma **Render**, com banco de dados **PostgreSQL gerenciado** e deploy automatizado a partir do GitHub.
+
+### 🌐 URL da API
+
+* **Base URL:** [https://game-review-api-final.onrender.com](https://game-review-api-final.onrender.com)
+* **Documentação Swagger:** [https://game-review-api-final.onrender.com/docs](https://game-review-api-final.onrender.com/docs)
+
+
+---
+
+### 🧱 Arquitetura de Deploy
+
+* **Plataforma:** Render (Web Service – Node.js)
+* **Banco de dados:** PostgreSQL (Render Managed Database)
+* **ORM:** Prisma
+* **Ambiente:** Production
+* **Porta:** Gerenciada automaticamente pelo Render (`process.env.PORT`)
+
+---
+
+### 🔐 Variáveis de Ambiente Utilizadas
+
+As seguintes variáveis de ambiente foram configuradas no Render:
+
+* `DATABASE_URL` → URL interna do PostgreSQL fornecida pelo Render
+* `JWT_ACCESS_SECRET` → Segredo para geração do Access Token (JWT)
+* `JWT_REFRESH_SECRET` → Segredo para geração do Refresh Token (JWT)
+* `ACCESS_TOKEN_EXPIRES_IN` → Exemplo: `15m`
+* `REFRESH_TOKEN_EXPIRES_IN` → Exemplo: `7d`
+* `NODE_ENV` → `production`
+
+> O `PORT` **não é configurado manualmente**, pois o Render injeta automaticamente essa variável.
+
+---
+
+### 🧪 Build e Execução em Produção
+
+O processo de deploy executa automaticamente:
+
+1. Instalação das dependências
+2. Geração do Prisma Client
+3. Execução das migrations (`prisma migrate deploy`)
+4. Build do TypeScript (`tsc`)
+5. Inicialização do servidor (`node dist/server.js`)
+
+Logs de sucesso indicam:
+
+```text
+Server running on port 10000
+Your service is live 🎉
+```
+
+---
+
+### 📌 Observações Importantes
+
+* O plano gratuito do Render pode **pausar a instância por inatividade**, causando um atraso inicial de até ~50 segundos na primeira requisição.
+* O Swagger é a principal forma de interação e validação da API em produção.
+* O deploy está integrado ao GitHub, permitindo **deploy automático a cada push na branch principal**.
+
+---
+
+### ✅ Status do Deploy
+
+✔ API online e acessível
+✔ Banco de dados conectado
+✔ Migrations aplicadas
+✔ Swagger funcional
+
+Este projeto está pronto para uso e avaliação acadêmica.
