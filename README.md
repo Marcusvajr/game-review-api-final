@@ -2,6 +2,8 @@
 
 API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, **JWT** (access + refresh), arquitetura em camadas e documentacao via **Swagger**.
 
+---
+
 ## Stack e recursos
 - Node.js + Express + TypeScript
 - Prisma (SQLite) com migrations e client
@@ -9,10 +11,14 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - Swagger em `/docs`
 - Testes com Jest
 
+---
+
 ## Requisitos
 - Node.js >= 18
 - npm (ou pnpm/yarn, adaptando comandos)
 - SQLite (usa arquivo `prisma/dev.db` por padrao)
+
+---
 
 ## Configuracao
 1. Copie o arquivo de variaveis:
@@ -25,6 +31,8 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
    - `ACCESS_TOKEN_EXPIRES_IN`: duracao do access token (ex: 15m)
    - `REFRESH_TOKEN_EXPIRES_IN`: duracao do refresh token (ex: 7d)
    - `PORT`: porta HTTP (padrao 3333)
+
+   ---
 
 ## Rodando o projeto
 - Instalar dependencias:
@@ -53,10 +61,14 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - API base: `http://localhost:3333/api`
 - Swagger: `http://localhost:3333/docs`
 
+---
+
 ## Autenticacao e perfis
 - Autenticacao via Bearer token (`Authorization: Bearer <access_token>`).
 - Fluxo: `POST /api/auth/login` retorna `accessToken` e `refreshToken`; `POST /api/auth/refresh` gera novo access token.
 - Perfis: `USER` (padrao) e `ADMIN`. Apenas admins podem criar/editar/deletar jogos. Reviews so podem ser editadas/deletadas pelo autor ou admin.
+
+---
 
 ## Regras de negocio
 - Uma review por jogo por usuario.
@@ -64,11 +76,15 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - Jogos: CRUD somente por admin.
 - Reviews: comentario opcional, max 500 caracteres.
 
+---
+
 ## Rotas principais
 ### Autenticacao
 - `POST /api/auth/register` - body: `{ name, email, password }`
 - `POST /api/auth/login` - body: `{ email, password }`
 - `POST /api/auth/refresh` - body: `{ refreshToken }`
+
+---
 
 ### Jogos
 - `GET /api/games` - lista jogos
@@ -79,11 +95,15 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - `DELETE /api/games/:id` (admin)
 - `POST /api/games/:id/reviews` (autenticado) - body: `{ rating (1-5), comment? }`
 
+---
+
 ### Reviews
 - `POST /api/reviews/game/:gameId` (autenticado) - body: `{ rating (1-5), comment? }`
 - `PUT /api/reviews/:id` (autor ou admin) - body: `{ rating?, comment? }`
 - `DELETE /api/reviews/:id` (autor ou admin)
 - `GET /api/reviews/game/:gameId` - publico
+
+---
 
 ## Modelo de dados (Prisma)
 - Usuario: `id`, `name`, `email`, `password`, `role` (USER/ADMIN)
@@ -91,22 +111,29 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - Review: `id`, `rating`, `comment`, `gameId`, `authorId`
 - RefreshToken: `id`, `token`, `userId`, `expiresAt`
 
+---
+
 ## Erros e formatos
 - Resposta de erro padrao: `{"error": "mensagem"}`.
 - JWT expirado ou ausente retorna 401; acesso sem permissao retorna 403.
 
+---
+
 ## Documentacao
 - Abra `http://localhost:3333/docs` com o servidor rodando para testar as rotas via Swagger UI.
+
+---
 
 ## 🚀 Deploy em Produção (Render)
 
 Esta API está hospedada em **produção** utilizando a plataforma **Render**, com banco de dados **PostgreSQL gerenciado** e deploy automatizado a partir do GitHub.
 
+---
+
 ### 🌐 URL da API
 
 * **Base URL:** [https://game-review-api-final.onrender.com](https://game-review-api-final.onrender.com)
 * **Documentação Swagger:** [https://game-review-api-final.onrender.com/docs](https://game-review-api-final.onrender.com/docs)
-
 
 ---
 
