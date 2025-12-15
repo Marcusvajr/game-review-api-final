@@ -53,6 +53,20 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - API base: `http://localhost:3333/api`
 - Swagger: `http://localhost:3333/docs`
 
+## Banco local x producao
+- Desenvolvimento: `prisma/schema.prisma` (SQLite) + `npm run prisma:migrate` + `npm run prisma:generate`
+- Producao (Render / Postgres): `prisma/postgres/schema.prisma` + `npm run prisma:migrate:prod` + `npm run prisma:generate:prod` (usa `DATABASE_URL` do Postgres)
+
+## Deploy no Render (resumo)
+- Build Command: `npm install && npm run build && npm run prisma:generate:prod && npm run prisma:migrate:prod`
+- Start Command: `npm start`
+- Variaveis de ambiente: `DATABASE_URL` (Postgres Render), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `ACCESS_TOKEN_EXPIRES_IN`, `REFRESH_TOKEN_EXPIRES_IN`, `NODE_ENV=production`, `PORT` (Render define automaticamente)
+- Swagger em producao: `https://<seu-servico>.onrender.com/docs`
+
+## 🌍 API em Producao
+- API: `https://game-review-api.onrender.com` (substitua pelo seu host no Render)
+- Swagger: `https://game-review-api.onrender.com/docs`
+
 ## Autenticacao e perfis
 - Autenticacao via Bearer token (`Authorization: Bearer <access_token>`).
 - Fluxo: `POST /api/auth/login` retorna `accessToken` e `refreshToken`; `POST /api/auth/refresh` gera novo access token.
