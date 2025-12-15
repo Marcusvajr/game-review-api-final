@@ -1,13 +1,13 @@
 # Game Review API
 
-API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, **JWT** (access + refresh), arquitetura em camadas e documentacao via **Swagger**.
+API REST para avaliação de jogos em **Node.js + TypeScript**, com **Prisma**, **JWT** (access + refresh), arquitetura em camadas e documentação via **Swagger**.
 
 ---
 
 ## Stack e recursos
 - Node.js + Express + TypeScript
-- Prisma (SQLite) com migrations e client
-- JWT (access e refresh) com expiracao configuravel
+- Prisma (SQLite para dev, PostgreSQL para produção) com migrations e client
+- JWT (access e refresh) com expiração configurável
 - Swagger em `/docs`
 - Testes com Jest
 
@@ -16,26 +16,26 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 ## Requisitos
 - Node.js >= 18
 - npm (ou pnpm/yarn, adaptando comandos)
-- SQLite (usa arquivo `prisma/dev.db` por padrao)
+- SQLite (usa arquivo `prisma/dev.db` por padrão)
 
 ---
 
 ## Configuração
-1. Copie o arquivo de variaveis:
+1. Copie o arquivo de variáveis:
    ```bash
    cp .env.example .env
    ```
-2. Ajuste valores conforme necessario:
-   - `DATABASE_URL`: conexao do banco (padrao SQLite local)
+2. Ajuste valores conforme necessário:
+   - `DATABASE_URL`: conexão do banco (padrão SQLite local)
    - `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`: segredos dos tokens
-   - `ACCESS_TOKEN_EXPIRES_IN`: duracao do access token (ex: 15m)
-   - `REFRESH_TOKEN_EXPIRES_IN`: duracao do refresh token (ex: 7d)
-   - `PORT`: porta HTTP (padrao 3333)
+   - `ACCESS_TOKEN_EXPIRES_IN`: duração do access token (ex: 15m)
+   - `REFRESH_TOKEN_EXPIRES_IN`: duração do refresh token (ex: 7d)
+   - `PORT`: porta HTTP (padrão 3333)
 
-   ---
+---
 
 ## Rodando o projeto
-- Instalar dependencias:
+- Instalar dependências:
   ```bash
   npm install
   ```
@@ -48,7 +48,7 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
   ```bash
   npm run dev
   ```
-- Build + producao:
+- Build + produção:
   ```bash
   npm run build
   npm start
@@ -63,28 +63,26 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 
 ---
 
-## Autenticacao e perfis
-- Autenticacao via Bearer token (`Authorization: Bearer <access_token>`).
+## Autenticação e perfis
+- Autenticação via Bearer token (`Authorization: Bearer <access_token>`).
 - Fluxo: `POST /api/auth/login` retorna `accessToken` e `refreshToken`; `POST /api/auth/refresh` gera novo access token.
-- Perfis: `USER` (padrao) e `ADMIN`. Apenas admins podem criar/editar/deletar jogos. Reviews so podem ser editadas/deletadas pelo autor ou admin.
+- Perfis: `USER` (padrão) e `ADMIN`. Apenas admins podem criar/editar/deletar jogos. Reviews só podem ser editadas/deletadas pelo autor ou admin.
 
 ---
 
-## Regras de negocio
-- Uma review por jogo por usuario.
-- Media (`avgRating`) recalculada a cada criacao/edicao/exclusao de review.
+## Regras de negócio
+- Uma review por jogo por usuário.
+- Média (`avgRating`) recalculada a cada criação/edição/exclusão de review.
 - Jogos: CRUD somente por admin.
-- Reviews: comentario opcional, max 500 caracteres.
+- Reviews: comentário opcional, máx. 500 caracteres.
 
 ---
 
 ## Rotas principais
-### Autenticacao
+### Autenticação
 - `POST /api/auth/register` - body: `{ name, email, password }`
 - `POST /api/auth/login` - body: `{ email, password }`
 - `POST /api/auth/refresh` - body: `{ refreshToken }`
-
----
 
 ### Jogos
 - `GET /api/games` - lista jogos
@@ -95,18 +93,16 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 - `DELETE /api/games/:id` (admin)
 - `POST /api/games/:id/reviews` (autenticado) - body: `{ rating (1-5), comment? }`
 
----
-
 ### Reviews
 - `POST /api/reviews/game/:gameId` (autenticado) - body: `{ rating (1-5), comment? }`
 - `PUT /api/reviews/:id` (autor ou admin) - body: `{ rating?, comment? }`
 - `DELETE /api/reviews/:id` (autor ou admin)
-- `GET /api/reviews/game/:gameId` - publico
+- `GET /api/reviews/game/:gameId` - público
 
 ---
 
 ## Modelo de dados (Prisma)
-- Usuario: `id`, `name`, `email`, `password`, `role` (USER/ADMIN)
+- Usuário: `id`, `name`, `email`, `password`, `role` (USER/ADMIN)
 - Game: `id`, `title`, `genre`, `avgRating`
 - Review: `id`, `rating`, `comment`, `gameId`, `authorId`
 - RefreshToken: `id`, `token`, `userId`, `expiresAt`
@@ -114,46 +110,44 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 ---
 
 ## Erros e formatos
-- Resposta de erro padrao: `{"error": "mensagem"}`.
-- JWT expirado ou ausente retorna 401; acesso sem permissao retorna 403.
+- Resposta de erro padrão: `{"error": "mensagem"}`
+- JWT expirado ou ausente retorna 401; acesso sem permissão retorna 403.
 
 ---
 
-## Documentacao
-- Abra `http://localhost:3333/docs` com o servidor rodando para testar as rotas via Swagger UI.
+## Deploy em produção (Render)
 
----
+Esta API está hospedada em **produção** na plataforma **Render**, com banco de dados **PostgreSQL gerenciado** e deploy automatizado via GitHub.
 
-## 🚀 Deploy em Produção (Render)
+### URLs de produção
+- **API:** `https://game-review-api-final.onrender.com`
+- **Swagger:** `https://game-review-api-final.onrender.com/docs`
 
-Esta API está hospedada em **produção** utilizando a plataforma **Render**, com banco de dados **PostgreSQL gerenciado** e deploy automatizado a partir do GitHub.
+### Endpoints principais (prod)
+- `POST /auth/register` — cria usuário
+- `POST /auth/login` — retorna `accessToken` e `refreshToken`
+- `POST /auth/refresh` — gera novo access token
+- `GET /games` — lista jogos
+- `POST /games` — cria jogo (ADMIN)
+- `POST /reviews/:gameId` — cria review (USER autenticado)
 
----
+### Arquitetura de deploy
+- Plataforma: Render (Web Service — Node.js)
+- Banco de dados: PostgreSQL (Render Managed Database)
+- ORM: Prisma
+- Ambiente: Production
+- Porta: gerenciada automaticamente pelo Render (`process.env.PORT`)
 
-### 🌐 URL da API
+### Variáveis de ambiente utilizadas
+- `DATABASE_URL` — URL interna do PostgreSQL fornecida pelo Render
+- `JWT_ACCESS_SECRET` — segredo para geração do Access Token (JWT)
+- `JWT_REFRESH_SECRET` — segredo para geração do Refresh Token (JWT)
+- `ACCESS_TOKEN_EXPIRES_IN` — exemplo: `15m`
+- `REFRESH_TOKEN_EXPIRES_IN` — exemplo: `7d`
+- `NODE_ENV` — `production`
+- Recomenda-se `NPM_CONFIG_PRODUCTION=false` no Render para garantir instalação de devDependencies usadas no build (tipos TS)
 
-* **Base URL:** [https://game-review-api-final.onrender.com](https://game-review-api-final.onrender.com)
-* **Documentação Swagger:** [https://game-review-api-final.onrender.com/docs](https://game-review-api-final.onrender.com/docs)
+### Comandos de build/start no Render
+- Build Command: `npm install && npm run build && npm run prisma:generate:prod && npm run prisma:migrate:prod`
+- Start Command: `npm start`
 
----
-
-### 🧱 Arquitetura de Deploy
-
-* **Plataforma:** Render (Web Service – Node.js)
-* **Banco de dados:** PostgreSQL (Render Managed Database)
-* **ORM:** Prisma
-* **Ambiente:** Production
-* **Porta:** Gerenciada automaticamente pelo Render (`process.env.PORT`)
-
----
-
-### 🔐 Variáveis de Ambiente Utilizadas
-
-As seguintes variáveis de ambiente foram configuradas no Render:
-
-* `DATABASE_URL` → URL interna do PostgreSQL fornecida pelo Render
-* `JWT_ACCESS_SECRET` → Segredo para geração do Access Token (JWT)
-* `JWT_REFRESH_SECRET` → Segredo para geração do Refresh Token (JWT)
-* `ACCESS_TOKEN_EXPIRES_IN` → Exemplo: `15m`
-* `REFRESH_TOKEN_EXPIRES_IN` → Exemplo: `7d`
-* `NODE_ENV` → `production`
