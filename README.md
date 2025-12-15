@@ -20,7 +20,7 @@ API REST para avaliacao de jogos, em **Node.js + TypeScript**, com **Prisma**, *
 
 ---
 
-## Configuracao
+## Configuração
 1. Copie o arquivo de variaveis:
    ```bash
    cp .env.example .env
